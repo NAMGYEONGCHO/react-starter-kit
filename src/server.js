@@ -26,8 +26,9 @@ import errorPageStyle from './routes/error/ErrorPage.css';
 import createFetch from './createFetch';
 import passport from './passport';
 import router from './router';
+import apiHandler from './data/api';
 import models from './data/models';
-import schema from './data/schema';
+// import schema from './data/schema';
 // import assets from './asset-manifest.json'; // eslint-disable-line import/no-unresolved
 import chunks from './chunk-manifest.json'; // eslint-disable-line import/no-unresolved
 import config from './config';
@@ -57,6 +58,8 @@ app.set('trust proxy', config.trustProxy);
 // Register Node.js middleware
 // -----------------------------------------------------------------------------
 app.use(express.static(path.resolve(__dirname, 'public')));
+
+// pass-through (does stuff do request but does not match a route)
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -82,6 +85,7 @@ app.use((err, req, res, next) => {
   next(err);
 });
 
+// passport is labrary for facebook login, google login, twitter login, all kinds of oauth logins...
 app.use(passport.initialize());
 
 app.get(
@@ -108,15 +112,7 @@ app.get(
 //
 // Register API middleware
 // -----------------------------------------------------------------------------
-app.use(
-  '/graphql',
-  expressGraphQL(req => ({
-    schema,
-    graphiql: __DEV__,
-    rootValue: { request: req },
-    pretty: __DEV__,
-  })),
-);
+app.use('/api', apiHandler);
 
 //
 // Register server-side rendering middleware
@@ -136,8 +132,6 @@ app.get('*', async (req, res, next) => {
     const fetch = createFetch(nodeFetch, {
       baseUrl: config.api.serverUrl,
       cookie: req.headers.cookie,
-      schema,
-      graphql,
     });
 
     // Global (context) variables that can be easily accessed from any React component
@@ -150,6 +144,7 @@ app.get('*', async (req, res, next) => {
       query: req.query,
     };
 
+    // lookup route from the /routes folder
     const route = await router.resolve(context);
 
     if (route.redirect) {
@@ -163,6 +158,7 @@ app.get('*', async (req, res, next) => {
     );
     data.styles = [{ id: 'css', cssText: [...css].join('') }];
 
+    // fetch the code from cache and attach to response
     const scripts = new Set();
     const addChunk = chunk => {
       if (chunks[chunk]) {
@@ -180,6 +176,7 @@ app.get('*', async (req, res, next) => {
       apiUrl: config.api.clientUrl,
     };
 
+    // produce final HTML string and send to client
     const html = ReactDOM.renderToStaticMarkup(<Html {...data} />);
     res.status(route.status || 200);
     res.send(`<!doctype html>${html}`);

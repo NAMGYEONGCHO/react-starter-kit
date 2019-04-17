@@ -39,12 +39,16 @@ module.exports = {
     // Recommend not to leave any console.log in your code
     // Use console.error, console.warn and console.info instead
     // https://eslint.org/docs/rules/no-console
-    'no-console': [
-      'error',
-      {
-        allow: ['warn', 'error', 'info'],
-      },
-    ],
+    'no-console': 'off',
+    'no-unused-vars': 'off',
+    'no-debugger': 'off',
+
+    'css-modules/no-unused-class': 'off',
+
+    'react/prop-types': 'off',
+    'react/no-multi-comp': 'off',
+
+    'jsx-a11y/alt-text': 'off',
 
     // Prefer destructuring from arrays and objects
     // http://eslint.org/docs/rules/prefer-destructuring

@@ -31,6 +31,11 @@ class Navigation extends React.Component {
         <Link className={cx(s.link, s.highlight)} to="/register">
           Sign up
         </Link>
+        <span className={s.spacer}> | </span>
+        <Link className={s.link} to="/data-entry">
+          Data Entry
+        </Link>
+        <span className={s.spacer}> | </span>
       </div>
     );
   }

@@ -33,7 +33,18 @@ module.exports = {
   },
 
   // Database
-  databaseUrl: process.env.DATABASE_URL || 'sqlite:database.sqlite',
+  database: {
+    // 'host', 'port', 'database', 'username', 'password'
+    dialect: 'mysql',
+    host: 'localhost',
+    port: 3306,
+    username: 'root',
+    password: '',
+    // password: 'MySQL1324qwasXY~!',
+    // username: 'cho',
+    // password: 'p4ssword',
+    database: 'mxc',
+  },
 
   // Web analytics
   analytics: {

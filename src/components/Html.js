@@ -12,6 +12,16 @@ import PropTypes from 'prop-types';
 import serialize from 'serialize-javascript';
 import config from '../config';
 
+const globalCss = {
+  __html: `
+.size-1 {
+  max-width: 1em;
+}
+`,
+};
+
+// import 'bootstrap/dist/css/bootstrap.min.css';
+
 /* eslint-disable react/no-danger */
 
 class Html extends React.Component {
@@ -48,7 +58,13 @@ class Html extends React.Component {
             <link key={script} rel="preload" href={script} as="script" />
           ))}
           <link rel="manifest" href="/site.webmanifest" />
+          <link
+            rel="stylesheet"
+            href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          />
           <link rel="apple-touch-icon" href="/icon.png" />
+          <style dangerouslySetInnerHTML={globalCss} />
+
           {styles.map(style => (
             <style
               key={style.id}

@@ -10,11 +10,23 @@
 import Sequelize, { Op } from 'sequelize';
 import config from '../config';
 
-const sequelize = new Sequelize(config.databaseUrl, {
-  operatorsAliases: Op,
-  define: {
-    freezeTableName: true,
-  },
-});
+console.log('Connecting to database...');
+
+const sequelize = new Sequelize(
+  Object.assign({}, config.database, {
+    operatorsAliases: Op,
+    define: {
+      freezeTableName: true,
+    },
+    dialectOptions: {
+      authSwitchHandler: ({ pluginName, pluginData }, cb) => {
+        console.log('pluginName', pluginName, pluginData);
+        // workaround for node mysql bug #1507
+        // cb(null, Buffer.alloc(0));
+        cb(null, pluginData);
+      },
+    },
+  }),
+);
 
 export default sequelize;
